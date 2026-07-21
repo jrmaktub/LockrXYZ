@@ -1,0 +1,71 @@
+{
+  "expo": {
+    "name": "Lockr",
+    "slug": "lockr",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "lockr",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#15160D",
+    "ios": {
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.lockr.app"
+    },
+    "android": {
+      "package": "com.lockr.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "server",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#208AEF",
+          "android": {
+            "image": "./assets/images/splash-icon.png",
+            "imageWidth": 76
+          }
+        }
+      ],
+      "expo-secure-store",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Lockr usa Face ID para que inicies sesion mas rapido y de forma segura."
+        }
+      ],
+      "expo-font",
+      "expo-image",
+      "expo-status-bar",
+      "expo-web-browser"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "c30c10f4-90d8-4ab3-b615-a2d1297f2f25"
+      }
+    },
+    "owner": "lockr",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/c30c10f4-90d8-4ab3-b615-a2d1297f2f25"
+    }
+  }
+}

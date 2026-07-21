@@ -1,0 +1,45 @@
+rules_version = '2';
+
+// Deploy with: firebase deploy --only firestore:rules
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // admins/{uid} — presence of a doc (any content) grants that uid
+    // cross-user access below. Nobody can write this from the app; add an
+    // admin by creating the doc manually in the Firestore console (Data tab).
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // users/{uid} — profile doc + all per-user subcollections (guias, notifs,
+    // addresses, payments, invoices). A user may read/write their own tree;
+    // an admin (bodega staff, Panel de Administracion) may read/write anyone's.
+    match /users/{uid} {
+      allow read, write: if request.auth != null && (request.auth.uid == uid || isAdmin());
+
+      match /{subcollection}/{docId} {
+        allow read, write: if request.auth != null && (request.auth.uid == uid || isAdmin());
+      }
+    }
+
+    // casilleros/{number} — reservation map (casillero number -> uid), used to
+    // guarantee uniqueness at sign-up. The number is claimed BEFORE the
+    // Firebase Auth account exists (the synthetic email is derived from the
+    // casillero), so `create` has to be open to signed-out requests here —
+    // Firestore's own create/update split still protects an already-claimed
+    // number: once it exists, further writes are `update`s, gated below to
+    // the owning uid (finalizeCasillero runs right after sign-up succeeds).
+    match /casilleros/{number} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if request.auth != null
+        && (resource.data.uid == null || resource.data.uid == request.auth.uid);
+      allow delete: if false;
+    }
+  }
+}
